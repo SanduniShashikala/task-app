@@ -5,12 +5,14 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
+
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
 @ToString(exclude = "taskSet")
 @EqualsAndHashCode(exclude = "taskSet")
-@Entity
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 public class Project implements SuperEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +26,8 @@ public class Project implements SuperEntity{
     @Setter(AccessLevel.NONE)
     private Set<Task> taskSet = new HashSet<>();
 
-    public Project(int id, String name) {
-        this.id = id;
+    public Project(String name, User user) {
         this.name = name;
+        this.user = user;
     }
 }
