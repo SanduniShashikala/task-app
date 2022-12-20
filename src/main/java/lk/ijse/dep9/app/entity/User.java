@@ -9,15 +9,12 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 
-@Entity
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements SuperEntity{
-    @Id
+public class User implements SuperEntity {
     private String username;
-    @Column(nullable = false)
     private String password;
-    @Column(name = "full_name", nullable = false)
     private String fullName;
 }

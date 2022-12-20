@@ -10,24 +10,13 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-@ToString(exclude = "taskSet")
-@EqualsAndHashCode(exclude = "taskSet")
-public class Project implements SuperEntity{
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class Project implements SuperEntity {
     private int id;
-    @Column(nullable = false)
     private String name;
-    @ManyToOne
-    @JoinColumn(name = "username", referencedColumnName = "username", nullable = false)
-    private User user;
-    @OneToMany(mappedBy = "project", fetch = FetchType.EAGER, cascade = {CascadeType.REMOVE})
-    @Setter(AccessLevel.NONE)
-    private Set<Task> taskSet = new HashSet<>();
+    private String username;
 
-    public Project(String name, User user) {
+    public Project(String name, String username) {
         this.name = name;
-        this.user = user;
+        this.username = username;
     }
 }
