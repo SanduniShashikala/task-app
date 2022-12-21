@@ -4,9 +4,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 import org.springframework.jndi.JndiObjectFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.context.annotation.RequestScope;
 
@@ -26,14 +28,19 @@ public class WebRootConfig {
         jndi.setExpectedType(DataSource.class);
         return jndi;
     }
+
     @Bean(destroyMethod = "close")
     @RequestScope
     public Connection connection(DataSource ds) throws SQLException {
         return DataSourceUtils.getConnection(ds);
     }
+    @Bean
+    public JdbcTemplate jdbcTemplate(DataSource ds){
+        return new JdbcTemplate(ds);
+    }
 
     @Bean
-    public DataSourceTransactionManager transactionManager(DataSource ds){
+    public PlatformTransactionManager transactionManager(DataSource ds){
       return new DataSourceTransactionManager(ds);
     }
 
