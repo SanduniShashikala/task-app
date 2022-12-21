@@ -4,6 +4,7 @@ import lk.ijse.dep9.app.dao.custom.TaskDAO;
 import lk.ijse.dep9.app.dao.util.ConnectionUtil;
 import lk.ijse.dep9.app.entity.Project;
 import lk.ijse.dep9.app.entity.Task;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -17,14 +18,9 @@ import java.util.Optional;
 
 
 @Component
-@Scope("request")
 public class TaskDAOImpl implements TaskDAO {
+    @Autowired
     private Connection connection;
-
-    public TaskDAOImpl() {
-
-        this.connection = ConnectionUtil.getConnection();
-    }
 
     @Override
     public Task save(Task task) {

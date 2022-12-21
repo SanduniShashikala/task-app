@@ -3,6 +3,7 @@ package lk.ijse.dep9.app.dao.custom.impl;
 import lk.ijse.dep9.app.dao.custom.UserDAO;
 import lk.ijse.dep9.app.dao.util.ConnectionUtil;
 import lk.ijse.dep9.app.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -15,14 +16,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-@Scope("request")
 public class UserDAOImpl implements UserDAO {
-    private final Connection connection;
-
-    public UserDAOImpl() {
-        this.connection = ConnectionUtil.getConnection();
-    }
-
+    @Autowired
+    private  Connection connection;
     @Override
     public User save(User user) {
         try {

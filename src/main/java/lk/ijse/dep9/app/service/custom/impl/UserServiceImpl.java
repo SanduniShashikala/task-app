@@ -14,10 +14,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @Component
-@Scope("request")
 public class UserServiceImpl implements UserService {
-
-//    private UserDAO userDAO;
 
     public UserServiceImpl() {
 
@@ -26,23 +23,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void createNewUserAccount(UserDTO userDTO) {
-        Connection connection = null;
-        try {
-            InitialContext ctx = new InitialContext();
-            DataSource dataSource = (DataSource) ctx.lookup("java:comp/env/jdbc/task-app");
-            connection = dataSource.getConnection();
-            ConnectionUtil.setConnection(connection);
-            UserDAO userDAO = DAOFactory.getInstance().getDAO(DAOTypes.USER, UserDAO.class);
-        } catch (NamingException | SQLException e) {
-            throw new RuntimeException(e);
-        }finally {
-            if (connection != null) {
-                try {
-                    connection.close();
-                } catch (SQLException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
+
     }
 }
