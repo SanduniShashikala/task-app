@@ -13,15 +13,18 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class TaskDTO implements Serializable {
-    @Null(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}, message = "Task Id can not be specified")
+    @Null(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}, message = "Task id can't be specified")
     private Integer id;
-    @NotBlank(message = "Task Content can not be empty or null")
+    @NotBlank(message = "Task content can't be empty or null")
     private String content;
-    @Null(groups = {ValidationGroups.Create.class, ValidationGroups.Update.class}, message = "Task Id can not be specified")
+    @Null(message = "Task id can't be specified")
     private Integer projectId;
+    @Null(message = "Task status is ready-only")
+    private Boolean isCompleted;
 
     public TaskDTO(Integer id, Integer projectId) {
         this.id = id;
         this.projectId = projectId;
     }
+
 }
