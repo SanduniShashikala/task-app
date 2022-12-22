@@ -6,7 +6,9 @@ import lk.ijse.dep9.app.entity.Project;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Component;
 
 import java.sql.*;
@@ -17,6 +19,7 @@ import java.util.Optional;
 @Component
 public class ProjectDAOImpl implements ProjectDAO {
     private final JdbcTemplate jdbc;
+    private final RowMapper<Project> projectRowMapper = (rs, rowNum) -> new Project(rs.getInt("id"), rs.getString("name"), rs.getString("username"));
 
     public ProjectDAOImpl(JdbcTemplate jdbc) {
         this.jdbc = jdbc;
@@ -24,22 +27,20 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public Project save(Project project) {
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbc.update(con -> {
-            PreparedStatement stm = con.prepareStatement("INSERT INTO Project (name, username) VALUES (?, ?)");
+            PreparedStatement stm = con.prepareStatement("INSERT INTO Project (name, username) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             stm.setString(1, project.getName());
             stm.setString(2, project.getUsername());
             return stm;
         }, keyHolder);
         project.setId(keyHolder.getKey().intValue());
         return project;
-
     }
 
     @Override
     public void update(Project project) {
-        jdbc.update("UPDATE Project SET name=? AND username=? WHERE id=?",
-                project.getName(), project.getUsername(), project.getId());
+        jdbc.update("UPDATE Project SET name=?, username =? WHERE id=?", project.getName(), project.getUsername(), project.getId());
     }
 
     @Override
@@ -49,19 +50,11 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public Optional<Project> findById(Integer id) {
-        return Optional.ofNullable(jdbc.query("SELECT * FROM Project WHERE id=?", rst -> {
-            return new Project(rst.getInt("id"),
-                    rst.getString("name"),
-                    rst.getString("username"));
-        }, id));
+        return jdbc.query("SELECT * FROM Project WHERE id=?", projectRowMapper, id).stream().findFirst();
     }
-
     @Override
     public List<Project> findAll() {
-        return jdbc.query("SELECT * FROM Project", (rst, rowInd) ->
-                new Project(rst.getInt("id"),
-                    rst.getString("name"),
-                    rst.getString("username")));
+        return jdbc.query("SELECT * FROM Project", projectRowMapper);
     }
 
     @Override
@@ -76,10 +69,7 @@ public class ProjectDAOImpl implements ProjectDAO {
 
     @Override
     public List<Project> findAllProjectsByUsername(String username) {
-        return jdbc.query("SELECT * FROM Project WHERE username = ?", (rst, rowIndex) ->
-                new Project(rst.getInt("id"),
-                        rst.getString("name"),
-                        rst.getString("username")), username);
+        return jdbc.query("SELECT * FROM Project WHERE username = ?", projectRowMapper, username);
     }
 
 }

@@ -103,6 +103,12 @@
             <artifactId>jakarta.el</artifactId>
             <version>3.0.3</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.aspectj/aspectjweaver -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.9.9.1</version>
+        </dependency>
     </dependencies>
 
     <build>
