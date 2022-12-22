@@ -1,16 +1,12 @@
 package lk.ijse.dep9.app.service.custom.impl;
 
-import lk.ijse.dep9.app.dao.custom.ProjectDAO;
-import lk.ijse.dep9.app.dao.custom.TaskDAO;
+import lk.ijse.dep9.app.repository.ProjectRepository;
+import lk.ijse.dep9.app.repository.TaskRepository;
 import lk.ijse.dep9.app.dto.ProjectDTO;
 import lk.ijse.dep9.app.dto.TaskDTO;
-import lk.ijse.dep9.app.entity.Project;
 import lk.ijse.dep9.app.entity.Task;
-import lk.ijse.dep9.app.exception.AccessDeniedException;
 import lk.ijse.dep9.app.service.custom.ProjectTaskService;
 import lk.ijse.dep9.app.util.Transformer;
-import org.springframework.context.annotation.Scope;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +18,12 @@ import java.util.stream.Collectors;
 @Transactional
 @Component
 public class ProjectTaskServiceImpl implements ProjectTaskService {
-    private ProjectDAO projectDAO;
-    private TaskDAO taskDAO;
+    private ProjectRepository projectDAO;
+    private TaskRepository taskDAO;
 
     private Transformer transformer;
 
-    public ProjectTaskServiceImpl(ProjectDAO projectDAO, TaskDAO taskDAO, Transformer transformer) {
+    public ProjectTaskServiceImpl(ProjectRepository projectDAO, TaskRepository taskDAO, Transformer transformer) {
         this.projectDAO = projectDAO;
         this.taskDAO = taskDAO;
         this.transformer = transformer;
@@ -50,7 +46,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
 
     @Override
     public void renameProject(ProjectDTO project) {
-        projectDAO.update(transformer.toProject(project));
+        projectDAO.save(transformer.toProject(project));
     }
 
     @Override
@@ -69,7 +65,7 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     public void renameTask(String username, TaskDTO task) {
         Task taskEntity = taskDAO.findById(task.getId()).get();
         taskEntity.setContent(task.getContent());
-        taskDAO.update(transformer.toTask(task));
+        taskDAO.save(transformer.toTask(task));
     }
 
     @Override
@@ -91,6 +87,6 @@ public class ProjectTaskServiceImpl implements ProjectTaskService {
     public void updateTaskStatus(String username, TaskDTO taskDTO, boolean completed) {
         Task task = taskDAO.findById(taskDTO.getId()).get();
         task.setStatus(completed ? Task.Status.COMPLETED : Task.Status.NOT_COMPLETED);
-        taskDAO.update(task);
+        taskDAO.save(task);
     }
 }

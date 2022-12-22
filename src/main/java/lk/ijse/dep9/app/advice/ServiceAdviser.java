@@ -1,7 +1,7 @@
 package lk.ijse.dep9.app.advice;
 
-import lk.ijse.dep9.app.dao.custom.ProjectDAO;
-import lk.ijse.dep9.app.dao.custom.TaskDAO;
+import lk.ijse.dep9.app.repository.ProjectRepository;
+import lk.ijse.dep9.app.repository.TaskRepository;
 import lk.ijse.dep9.app.dto.ProjectDTO;
 import lk.ijse.dep9.app.dto.TaskDTO;
 import lk.ijse.dep9.app.entity.Project;
@@ -21,10 +21,10 @@ import org.springframework.web.server.ResponseStatusException;
 @Slf4j
 public class ServiceAdviser {
 
-    private ProjectDAO projectDAO;
-    private TaskDAO taskDAO;
+    private ProjectRepository projectDAO;
+    private TaskRepository taskDAO;
 
-    public ServiceAdviser(ProjectDAO projectDAO, TaskDAO taskDAO) {
+    public ServiceAdviser(ProjectRepository projectDAO, TaskRepository taskDAO) {
         this.projectDAO = projectDAO;
         this.taskDAO = taskDAO;
     }
@@ -58,7 +58,7 @@ public class ServiceAdviser {
     private void executeAdvice(String username, int projectId){
         Project project = projectDAO.findById(projectId).orElseThrow(
                 () -> new EmptyResultDataAccessException(1));
-        if (!project.getUsername().matches(username)) throw new AccessDeniedException();
+        if (!project.getUser().getUsername().matches(username)) throw new AccessDeniedException();
     }
 }
 
